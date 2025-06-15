@@ -207,7 +207,7 @@ export default function Challenge(props: ChallengeProps) {
                       : // 正常状态样式
                       userAnswer === option.key
                       ? 'bg-accent-50 dark:bg-accent-900/20 border-accent-300 dark:border-accent-700'
-                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750'
+                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                   } ${
                     answerState.isCompleted || isLocked
                       ? 'cursor-not-allowed opacity-60'
@@ -265,7 +265,7 @@ export default function Challenge(props: ChallengeProps) {
                       : // 正常状态样式
                       (userAnswer as string[]).includes(option.key)
                       ? 'bg-accent-50 dark:bg-accent-900/20 border-accent-300 dark:border-accent-700'
-                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750'
+                      : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
                   } ${
                     answerState.isCompleted || isLocked
                       ? 'cursor-not-allowed opacity-60'
