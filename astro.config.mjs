@@ -3,11 +3,20 @@ import { defineConfig } from 'astro/config'
 import starlight from '@astrojs/starlight'
 import tailwindcss from '@tailwindcss/vite'
 
+import preact from '@astrojs/preact'
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     starlight({
       title: 'Docs with Tailwind',
+      defaultLocale: 'root',
+      locales: {
+        root: {
+          label: '简体中文',
+          lang: 'zh-CN',
+        },
+      },
       social: [
         {
           icon: 'github',
@@ -73,6 +82,7 @@ export default defineConfig({
       ],
       customCss: ['./src/styles/global.css'],
     }),
+    preact({ compat: true }),
   ],
   vite: {
     plugins: [tailwindcss()],
