@@ -1,0 +1,182 @@
+---
+title: 表达式
+---
+
+import { Badge, Code } from '@astrojs/starlight/components'
+import Challenge from '@/components/challenge'
+
+编程之所以灵活，就是因为所有需要填写值的地方，都可以用**表达式**来替代。举一个例子：
+
+从页面上获取一个 id 为 "button1" 的按钮元素
+
+<Code
+  lang='js'
+  code={`
+    const btn1 = document.getElementById("button1")
+`}
+/>
+
+想要为这个按钮元素设置宽度时，可以直接写一个固定值：
+
+<Code
+  title='使用固定值'
+  lang='js'
+  code={`
+    // 把 btn1 的宽度设为了 80
+    btn1.style.width = 80
+`}
+/>
+
+也可以使用各种表达式来替代固定值：
+
+<Code
+    title='使用表达式'
+  lang='js'
+  code={`
+    const size = 20
+    // 将 btn1 的宽度设为 size * 4 的运算结果
+    btn1.style.width = size * 4
+
+    // 假设我们有一个 getButtonWidth 函数，它返回一个宽度值，将它返回的值作为 btn1 的宽度
+    btn1.style.width = getButtonWidth()
+
+    btn1.style.width = isMobile ? 48 : 80
+
+`}
+/>
+
+JS 在执行到 `btn1.style.width = size * 4` 这句代码时，做了两件事情：
+
+1. 计算 size \* 4 的值，首先找到 size 的值为 20，计算 20 \* 4 = 80
+2. 将计算得出的 80 赋值给 btn1.style.width
+
+与以下代码的逻辑没有任何区别：
+
+<Code
+  lang='js'
+  code={`
+    const size = 20
+    const result = size * 4
+    btn1.style.width = result
+`}
+/>
+
+只是由于我们只有在为 `btn1.style.width` 赋值时才需要 size \* 4 的结果，其他地方都不需要。为了尽量避免不必要的代码，就省去了 `const result = size * 4` 这个步骤。
+
+这意味着**只要弄清楚哪些东西是表达式、表达式可以用在哪些地方，就可以理解几乎全部的代码语句**。
+
+放一个比较难阅读的例子：
+
+<Code
+  lang='js'
+  code={`
+    createRoot(document.getElementById('root')).render()
+`}
+/>
+
+从左到右分析，`createRoot(...)` 显然是一个函数调用，这个函数接收一个参数，这里并没有传入值，而是传入了一个表达式：`document.getElementById('root')`，然后调用了 `render()` 方法。
+
+在执行这行代码时，一共做了以下几件事情：
+
+1. 执行 `document.getElementById('root')`，它返回了一个 `Element(DOM 元素)`
+2. 将这个 `Element` 传入 `createRoot()` 函数，`createRoot()` 返回了一个对象
+3. 调用这个对象的 `render()` 方法
+
+为了便于理解，可以改写成以下形式：
+
+<Code
+  lang='js'
+  code={`
+    const rootElement = document.getElementById('root')
+    const root = createRoot(rootElement)
+    root.render()
+`}
+/>
+
+通过上述例子可以看出来，表达式就是程序语句中数据传递的中介，当你在书写代码时，某些地方（比如函数的参数、数组的索引、对象的属性）要求你传入一个值的时候，你除了可以传入 `"xiaoming"`, `123`, `true` 这样的固定值，也可以传入复杂的表达式。当你阅读别人的“代码长难句”时，掌握这样的思维也可以帮助你分析代码。
+
+## 表达式的特征
+
+表达式最核心的特征就是**可以被求值**，或者说它**产生一个值**。在需要用到值的地方，表达式的作用就和一个普通值一模一样。
+
+## 常见表达式的类型
+
+常见的表达式有以下几种：
+
+##### 原始表达式
+
+- **字面量值**。比如 `"abc"`, `123`, `true`, `[0, 1, 2]`,`{ key: "abc", value: 123 }` 这种字面量值就是一个表达式，它产生的值就是它自己。
+- **变量名**。它产生的值就是它存储的值，说白了就是用变量名可以获取到变量值。
+- **模板字符串**。比如 `Hello ${name}`，把 name 变量中存储的值塞到这个字符串里，假如 name 是小明，最终得到的就是 "Hello 小明" 字符串。
+- **`null` 和 `undefined`**。表示空值和未定义的值。
+
+##### 运算表达式
+
+- **一元运算**。一个操作数和一个操作符，例如：`a++`, `a--`。
+- **二元运算**。两个操作数和一个操作符，例如四则运算：`a + b`, `a - b`, `a * b`, `a / b`。
+- **三元运算**。一个条件和两个结果。`condition ? a : b` 的意思就是如果 condition 的值为真，这个表达式的值就是 a，否则就是 b。
+
+##### 成员访问表达式
+
+- **获取对象的属性或方法**。例如 `obj.name` 就是获取 obj 对象的 name 属性的值。
+- **获取数组中的某一个值**。例如 `arr[2]` 是获取数组 arr 中下标为 2 的值。
+
+##### 函数相关表达式
+
+- **函数调用**。函数名 + 括号表示调用一个函数，`fun1()` 这个表达式的值就是函数 fun1 的返回值。
+- **函数定义**<Badge text='重点' variant='danger' />。函数的定义本身也可以是一个表达式，参考下面的例子：
+
+<Code
+  lang='js'
+  code={`
+    const fun1 = function(name) {
+        return "Hello" + name
+    }
+`}
+/>
+
+这个例子中，`function(name) { return "Hello" + name }` 的部分就是一个函数定义表达式。将函数的定义赋值给 fun1 变量之后，就可以通过 `fun1()` 的方式调用这个函数了。
+
+## 练习题
+
+<Challenge
+  client:idle
+  id='expression-statement-01'
+  type='single'
+  question='1. 下面哪些是表达式？'
+  options={[
+    { key: 'A', value: 'let name;' },
+    { key: 'B', value: 'if (true) {}' },
+    { key: 'C', value: '10 + 5' },
+    { key: 'D', value: 'for (let i = 0; i < 10; i++) {...}' },
+  ]}
+  answer='C'
+/>
+
+<Challenge
+  client:idle
+  id='expression-statement-02'
+  type='single'
+  question='2. 表达式最重要的特点是什么？'
+  options={[
+    { key: 'A', value: '可以写很长' },
+    { key: 'B', value: '可以产生一个值' },
+    { key: 'C', value: '必须包含运算符' },
+    { key: 'D', value: '只能是数字' },
+  ]}
+  answer='B'
+/>
+
+<Challenge
+  client:idle
+  id='expression-statement-03'
+  type='multiple'
+  question='3. 下面哪些位置可以写表达式？（多选）'
+  options={[
+    { key: 'A', value: '变量赋值：let x = 这里' },
+    { key: 'B', value: '函数参数：fn(这里)' },
+    { key: 'C', value: '数组元素：[这里, 这里]' },
+    { key: 'D', value: '条件判断：if (这里)' },
+  ]}
+  answer={['A', 'B', 'C', 'D']}
+/>

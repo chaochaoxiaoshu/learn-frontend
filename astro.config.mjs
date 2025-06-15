@@ -9,7 +9,8 @@ import preact from '@astrojs/preact'
 export default defineConfig({
   integrations: [
     starlight({
-      title: 'Docs with Tailwind',
+      title: 'Caihong Learn Frontend',
+      logo: { src: '@/assets/houston.webp', replacesTitle: true },
       defaultLocale: 'root',
       locales: {
         root: {
@@ -49,6 +50,10 @@ export default defineConfig({
         {
           label: '前端工程化',
           items: [
+            {
+              label: 'Node.js',
+              slug: 'engineering/nodejs',
+            },
             {
               label: 'ES Module',
               slug: 'engineering/es-module',
