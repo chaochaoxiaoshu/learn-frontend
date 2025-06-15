@@ -5,7 +5,9 @@ title: 表达式
 import { Badge } from '@astrojs/starlight/components'
 import Challenge from '@/components/challenge'
 
-编程之所以灵活，就是因为所有需要填写值的地方，都可以用**表达式**来替代。举一个例子：
+编程之所以灵活，就是因为所有需要填写值的地方，都可以用**表达式**来替代。
+
+举一个例子：
 
 从页面上获取一个 id 为 "button1" 的按钮元素
 
@@ -27,9 +29,10 @@ const size = 20
 // 将 btn1 的宽度设为 size * 4 的运算结果
 btn1.style.width = size * 4
 
-// 假设我们有一个 getButtonWidth 函数，它返回一个宽度值，将它返回的值作为 btn1 的宽度
+// 也可以假设我们有一个 getButtonWidth 函数，它返回一个宽度值，将它返回的值作为 btn1 的宽度
 btn1.style.width = getButtonWidth()
 
+// 或者使用三元表达式，当 isMobile 为 true 时将宽度设为 48，否则设为 80
 btn1.style.width = isMobile ? 48 : 80
 ```
 
@@ -48,9 +51,7 @@ btn1.style.width = result
 
 只是由于我们只有在为 `btn1.style.width` 赋值时才需要 size \* 4 的结果，其他地方都不需要。为了尽量避免不必要的代码，就省去了 `const result = size * 4` 这个步骤。
 
-这意味着**只要弄清楚哪些东西是表达式、表达式可以用在哪些地方，就可以理解几乎全部的代码语句**。
-
-放一个比较难阅读的例子：
+再看一个比较难阅读的例子：
 
 ```js
 createRoot(document.getElementById('root')).render()
