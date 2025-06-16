@@ -1,0 +1,65 @@
+---
+title: 对象
+---
+
+对象的本质是一组键值对(key-value)的集合，根据键(key)可以找到对应的值(value)。
+
+键在绝大多数情况下都是字符串，值可以是任何类型。
+
+比如键可以是数字、字符串、布尔值这样的简单值：
+
+```js
+const person = {
+  name: 'xiaoming',
+  age: 20,
+  isStudent: true
+}
+```
+
+也可以嵌套一个对象：
+
+```js
+const person = {
+  name: 'xiaoming',
+  age: 20,
+  isStudent: true,
+  address: {
+    city: 'beijing',
+    street: 'haidian'
+  }
+}
+```
+
+甚至可以是函数，当函数位于对象的属性上时，我们称之为**方法**：
+
+```js
+const person = {
+  name: 'xiaoming',
+  age: 20,
+  isStudent: true,
+  address: {
+    city: 'beijing',
+    street: 'haidian'
+  },
+  sayHello: function () {
+    console.log('hello')
+  }
+}
+```
+
+通常使用点语法来访问对象的属性：
+
+```js
+person.name // 'xiaoming'
+person.age // 20
+person.isStudent // true
+person.address.city // 'beijing'
+person.address.street // 'haidian'
+person.sayHello() // 'hello'
+```
+
+但也可以使用方括号语法，将[表达式](/javascript/0001-表达式)作为键名，访问对象的属性：
+
+```js
+person['na' + 'me'] // 'xiaoming'
+```
