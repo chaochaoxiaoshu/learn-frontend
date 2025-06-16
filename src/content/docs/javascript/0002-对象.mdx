@@ -2,52 +2,46 @@
 title: 对象
 ---
 
-对象的本质是一组键值对(key-value)的集合，根据键(key)可以找到对应的值(value)。
+import { Aside } from '@astrojs/starlight/components'
 
-键在绝大多数情况下都是字符串，值可以是任何类型。
+一个对象本质是一组键值对(key-value)，可以根据键(key)找到对应的值(value)。
 
-比如键可以是数字、字符串、布尔值这样的简单值：
+键(key)在绝大多数情况下都是字符串，值(value)可以是任何类型。
 
-```js
-const person = {
-  name: 'xiaoming',
-  age: 20,
-  isStudent: true
-}
-```
-
-也可以嵌套一个对象：
+比如值可以是数字、字符串、布尔值这样的简单值：
 
 ```js
 const person = {
   name: 'xiaoming',
   age: 20,
   isStudent: true,
-  address: {
-    city: 'beijing',
-    street: 'haidian'
-  }
 }
 ```
 
-甚至可以是函数，当函数位于对象的属性上时，我们称之为**方法**：
+也可以对象嵌套对象：
 
 ```js
 const person = {
-  name: 'xiaoming',
-  age: 20,
-  isStudent: true,
+  // ...
   address: {
     city: 'beijing',
-    street: 'haidian'
+    street: 'haidian',
   },
-  sayHello: function () {
-    console.log('hello')
-  }
 }
 ```
 
-通常使用点语法来访问对象的属性：
+甚至可以是函数，当函数作为对象的属性时，我们称之为**方法**：
+
+```js
+const person = {
+  // ...
+  sayHello: () => {
+    console.log('hello')
+  },
+}
+```
+
+通常使用点语法来访问对象的属性和方法：
 
 ```js
 person.name // 'xiaoming'
@@ -58,8 +52,56 @@ person.address.street // 'haidian'
 person.sayHello() // 'hello'
 ```
 
-但也可以使用方括号语法，将[表达式](/javascript/0001-表达式)作为键名，访问对象的属性：
+也可以使用方括号语法，方括号语法支持将[表达式](/javascript/0001-表达式)作为键名，访问对象的属性，这具有极大的灵活性：
 
 ```js
-person['na' + 'me'] // 'xiaoming'
+const keys = ['name', 'age', 'isStudent']
+person[keys[1]] // 20
 ```
+
+## 引用传递
+
+思考以下代码：
+
+```js
+// 声明一个名为 obj1 的对象，有一个属性 a，对应的值为 1
+const obj1 = {
+  a: 1,
+}
+// 声明一个 obj2，把 obj1 赋值给 obj2
+const obj2 = obj1
+// 把 obj2 的 a 属性对应的值改为 2
+obj2.a = 2
+// 此时 obj1.a 的值是多少？
+console.log(obj1.a)
+```
+
+`obj1.a` 的值是多少？正确答案是 `2`，如果你感到困惑，以下是逐行分析：
+
+1. 运行 `const obj1 = { a: 1 }` 时，先在内存中开辟了一块空间，将 `a: 1` 存入这个空间里，然后使 obj1 **指向**这块内存空间
+
+![](@/assets/object_ref_0.png)
+
+2. 运行 `const obj2 = obj1`，创建一个 obj2 变量，让 obj2 也**指向** obj1 所指向的内存空间
+
+![](@/assets/object_ref_1.png)
+
+3. 运行 `obj2.a = 2`，根据 obj2 找到了这片内存空间，然后将其中 a 的值修改为了 2
+
+![](@/assets/object_ref_2.png)
+
+4. 此时再访问 `obj1.a`, obj1 指向的内存空间中，a 的值已经被改成 2 了
+
+<Aside title='提示'>
+这里有一个近似的比喻：
+
+1. 有个叫 obj1 的人去酒店开房间，开好房间后在房间里的 a 位置放了一个 1
+2. obj1 从房间出来后，把门锁密码告诉了 obj2
+3. obj2 随后进房间里，偷偷把 a 位置的 1 换成了 2
+4. 等到 obj1 再进房间查看时，a 已经是 2 了
+
+对应着上面的 4 个步骤
+
+</Aside>
+
+这告诉我们，当你将一个对象赋值给一个变量时，变量存储的是对象的**引用**，在上述的例子中，通过 `obj1` 可以找到 `{ a: 1 }`，但 `obj1` 不是 `{ a: 1 }`，只是它的一个引用，同理 `obj2` 也只是这个对象的引用。
