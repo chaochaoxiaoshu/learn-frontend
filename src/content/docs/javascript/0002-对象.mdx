@@ -2,7 +2,8 @@
 title: 对象
 ---
 
-import { Aside } from '@astrojs/starlight/components'
+import { Aside, Code } from '@astrojs/starlight/components'
+import Challenge from '@/components/challenge'
 
 一个对象本质是一组键值对(key-value)，可以根据键(key)找到对应的值(value)。
 
@@ -14,7 +15,7 @@ import { Aside } from '@astrojs/starlight/components'
 const person = {
   name: 'xiaoming',
   age: 20,
-  isStudent: true,
+  isStudent: true
 }
 ```
 
@@ -25,8 +26,8 @@ const person = {
   // ...
   address: {
     city: 'beijing',
-    street: 'haidian',
-  },
+    street: 'haidian'
+  }
 }
 ```
 
@@ -35,9 +36,9 @@ const person = {
 ```js
 const person = {
   // ...
-  sayHello: () => {
+  sayHello() {
     console.log('hello')
-  },
+  }
 }
 ```
 
@@ -66,7 +67,7 @@ person[keys[1]] // 20
 ```js
 // 声明一个名为 obj1 的对象，有一个属性 a，对应的值为 1
 const obj1 = {
-  a: 1,
+  a: 1
 }
 // 声明一个 obj2，把 obj1 赋值给 obj2
 const obj2 = obj1
@@ -105,3 +106,71 @@ console.log(obj1.a)
 </Aside>
 
 这告诉我们，当你将一个对象赋值给一个变量时，变量存储的是对象的**引用**，在上述的例子中，通过 `obj1` 可以找到 `{ a: 1 }`，但 `obj1` 不是 `{ a: 1 }`，只是它的一个引用，同理 `obj2` 也只是这个对象的引用。
+
+## 练习题
+
+<Challenge
+  client:idle
+  id='object-01'
+  type='fill'
+  question='1. 以下代码的执行结果是什么？'
+  answer='2'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+const obj1 = { a: 1 }
+
+function changeObj(obj) {
+obj.a += 1
+}
+changeObj.a = 3
+
+changeObj(obj1)
+console.log(obj1.a)
+`}
+/>
+
+</Challenge>
+
+<Challenge
+  id='object-02'
+  type='multiple'
+  question='2. 下列选项语法正确的有？（多选）'
+  options={[
+    { key: 'A', value: 'obj1[c + 1]' },
+    { key: 'B', value: 'obj1[a][b][c]' },
+    { key: 'C', value: 'obj1.a[b].c' },
+    { key: 'D', value: 'obj1.sayHello()' }
+  ]}
+  answer={['B', 'C', 'D']}
+/>
+
+<Challenge
+  client:idle
+  id='object-03'
+  type='fill'
+  question='3. 以下代码的执行结果是什么？'
+  answer='5'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+const obj1 = {
+    a: {
+        b: 'c'
+    },
+    c: {
+        d: 4
+    },
+    d: 5
+}
+const obj2 = obj1[obj1.a.b]
+obj2.d = 10
+
+console.log(obj1.d)`}
+/>
+
+</Challenge>
