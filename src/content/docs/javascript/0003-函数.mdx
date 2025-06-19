@@ -1,0 +1,361 @@
+---
+title: 函数
+---
+
+import { Aside, Code } from '@astrojs/starlight/components'
+import Challenge from '@/components/challenge'
+
+<Aside title='前置知识'>
+  <ul>
+    <li>
+      <a href='/javascript/0001-表达式'>表达式</a>
+    </li>
+    <li>
+      <a href='/javascript/0002-对象'>对象</a>
+    </li>
+  </ul>
+</Aside>
+
+函数用于封装一段可重用的代码，它可以接受一组参数并返回一个值。参数和返回值都是可选的。
+
+想要调用一个函数，首先要定义它。函数定义（或者叫函数调用），由 `function` 关键字开始，后面跟着：
+
+- 函数名
+- 被一对括号括起来、用逗号分割的参数列表
+- 被一对花括号括起来的函数体
+
+就像下面这样：
+
+```js
+function add(a, b) {
+  return a + b
+}
+```
+
+定义函数并不会立即执行它，只是为这段可重用的代码起了一个名字。想要调用函数，需要使用函数名加上一对括号，括号里可以传入参数：
+
+```js
+add(1, 2) // 3
+add(5, 8) // 13
+add(10, 20) // 30
+```
+
+调用函数时，会**执行**函数体中的代码。如果函数返回了一个值（函数体中有 `return` 语句），那么调用函数时，这个值会被返回：
+
+```js
+const result = add(1, 2)
+console.log(result) // 3
+```
+
+因此，函数调用是一个[表达式](/javascript/0001-表达式)，它返回一个值。
+
+除此之外，函数定义本身也可以是一个表达式。把函数定义赋值给一个变量，`fn` 这个变量保存了 `add` 函数的[引用](/javascript/0002-对象#引用传递)，因此就可以用变量的名字来调用这个函数：
+
+```js
+const fn = function add(a, b) {
+  return a + b
+}
+
+fn(1, 2) // 3
+fn(5, 8) // 13
+fn(10, 20) // 30
+```
+
+<Aside title='深入理解'>
+在底层，函数是一种特殊的对象，例如以下代码是完全有效的：
+
+```js
+const fn = function () {
+  console.log('hello')
+}
+
+fn.hello = 'Hello'
+console.log(fn.hello) // Hello
+```
+
+所以函数除了可以使用 `()` 语法调用以外，还拥有普通对象的所有特性。
+
+</Aside>
+
+## 高阶函数
+
+由于函数实际上是一个对象，可以传递函数的[引用](/javascript/0002-对象#引用传递)，因此可以将函数作为参数传递给另一个函数，或者将函数作为另一个函数的返回值。
+
+### 函数作为参数
+
+比如这个最常见的 `addEventListener` 函数，它的第二个参数就是一个函数：
+
+```js
+button.addEventListener('click', function (e) {
+  console.log(e)
+})
+```
+
+在这里我们将一个函数的定义传递给 `addEventListener`，`addEventListener` 保存了这个函数的引用，并会在按钮被点击时调用我们传递的函数，我们将这个函数称为**回调函数**。
+
+你也可以自己实现一个接收函数作为参数的函数：
+
+```js
+// 定义一个提交表单的函数，它接收一个函数作为参数，并在提交成功后调用这个函数
+async function handleSubmit(onSuccess) {
+  await ...
+  onSuccess()
+}
+
+// 调用 handleSubmit，传递一个函数作为参数
+handleSubmit(function () {
+  console.log('提交成功')
+})
+```
+
+### 函数作为返回值
+
+一个函数也可以返回另一个函数：
+
+```js
+// 定义一个函数，它返回了另一个函数
+function createAdder(x) {
+  return function (y) {
+    return x + y
+  }
+}
+
+// 调用 createAdder，返回一个函数
+const add5 = createAdder(5)
+
+// 再调用这个函数
+const result = add5(3)
+console.log(result) // 8
+```
+
+### 语言中内置的高阶函数
+
+JS 语言中内置了许多高阶函数，比如 `forEach`, `map`, `filter`, `reduce` 等。
+
+举个例子，当你想要对数组中的每一项元素指定一些操作时，可以使用 `for` 循环：
+
+```js
+const arr = [0, 1, 2]
+
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i])
+}
+```
+
+也可以直接使用 `forEach`：
+
+```js
+arr.forEach((item) => console.log(item))
+```
+
+`forEach` 函数的语义非常清晰，直接翻译过来就是“对于每一项”，调用它就是对于数组中的每一项执行一个**操作**，这个**操作**就是你所传递的**回调函数**。回调函数接收的第一个参数就是当前循环到的数组的项。
+
+我们也可以实现一个自己的 `forEach` 函数，以帮助你更好地理解：
+
+```js
+function forEach(arr, callback) {
+  for (let i = 0; i < arr.length; i++) {
+    callback(arr[i])
+  }
+}
+
+const arr = [0, 1, 2]
+
+forEach(arr, (item) => console.log(item))
+```
+
+## 箭头函数
+
+还有一种更简洁的定义函数的方式，称为**箭头函数**：
+
+```js
+const fn = (/* 参数 */) => {
+  /* 函数体 */
+}
+```
+
+箭头函数在一些方面与普通函数有所差别，但大多数情况下，它们是等价的。
+
+当函数体中只包含一条 `return` 语句时，箭头函数可以省略花括号和 `return` 关键字，箭头函数会自动返回这条语句的值:
+
+```js
+// 下面两种写法是完全等价的
+
+const add = (a, b) => {
+  return a + b
+}
+
+const add = (a, b) => a + b
+```
+
+因为箭头函数的语法更简洁，语义更接近表达式，而不是语句，所以推荐在需要传递值的场景使用箭头函数而不是普通函数：
+
+```js
+// 如果一个函数的参数是函数，那么推荐使用箭头函数
+addEventListener('click', (e) => console.log(e))
+
+// 如果一个对象的属性是函数，那么推荐使用箭头函数
+const obj = {
+  name: 'xiaoming',
+  sayHello: () => console.log('hello')
+}
+```
+
+<Challenge
+  client:idle
+  id='function-01'
+  type='single'
+  question='1. 以下代码的执行结果是什么？'
+  options={[
+    { key: 'A', value: '0 1 0' },
+    { key: 'B', value: '1 2 3' },
+    { key: 'C', value: '0 1 2' },
+    { key: 'D', value: '0 1 1' },
+  ]}
+  answer='A'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+function createCounter() {
+  let count = 0;
+  return function () {
+    return count++;
+  };
+}
+
+const counter1 = createCounter();
+const counter2 = createCounter();
+
+console.log(counter1()); // ?
+console.log(counter1()); // ?
+console.log(counter2()); // ?
+`}
+/>
+
+</Challenge>
+
+<Challenge
+  client:idle
+  id='function-02'
+  type='single'
+  question='2. 以下代码的执行结果是什么？'
+  options={[
+    { key: 'A', value: '8 13' },
+    { key: 'B', value: '15 15' },
+    { key: 'C', value: '3 3' },
+    { key: 'D', value: '5 10' },
+  ]}
+  answer='A'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+function makeAdder(x) {
+  return function (y) {
+    return x + y;
+  };
+}
+
+const add5 = makeAdder(5);
+const add10 = makeAdder(10);
+
+console.log(add5(3)); // ?
+console.log(add10(3)); // ?
+`}
+/>
+
+</Challenge>
+
+<Challenge
+  client:idle
+  id='function-03'
+  type='single'
+  question='3. 以下代码的执行结果是什么？'
+  options={[
+    { key: 'A', value: '"greeting, Tom"' },
+    { key: 'B', value: '"Hi, Tom"' },
+    { key: 'C', value: 'undefined' },
+    { key: 'D', value: '报错' },
+  ]}
+  answer='B'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+function greet(greeting) {
+  return function(name) {
+    return greeting + ", " + name;
+  };
+}
+
+const sayHi = greet("Hi");
+
+console.log(sayHi("Tom"));
+`}
+/>
+
+</Challenge>
+
+<Challenge
+  client:idle
+  id='function-04'
+  type='single'
+  question='4. 以下代码的执行结果是什么？'
+  options={[
+    { key: 'A', value: '0' },
+    { key: 'B', value: '1' },
+    { key: 'C', value: '2' },
+    { key: 'D', value: '报错' },
+  ]}
+  answer='C'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+function doTwice(fn) {
+  fn();
+  fn();
+}
+
+let x = 0;
+doTwice(() => x++);
+console.log(x);
+`}
+/>
+
+</Challenge>
+
+<Challenge
+  client:idle
+  id='function-05'
+  type='single'
+  question='5. 以下代码的执行结果是什么？'
+  options={[
+    { key: 'A', value: '5' },
+    { key: 'B', value: '2' },
+    { key: 'C', value: '10' },
+    { key: 'D', value: '报错' },
+  ]}
+  answer='C'
+>
+  <Code
+    slot='content'
+    lang='js'
+    code={`
+function makeMultiplier(factor) {
+  return function(n) {
+    return n * factor;
+  };
+}
+
+const double = makeMultiplier(2);
+console.log(double(5));
+`}
+/>
+
+</Challenge>
